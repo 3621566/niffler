@@ -1,4 +1,4 @@
-package niffler;
+package niffler.tests;
 
 import niffler.jupiter.BeforeSuiteExtension;
 import org.junit.jupiter.api.extension.ExtendWith;

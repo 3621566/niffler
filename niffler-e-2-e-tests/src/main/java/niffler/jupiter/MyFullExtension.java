@@ -37,11 +37,11 @@ public class MyFullExtension implements AfterAllCallback,
 
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception {
-        System.out.println("              ### BeforeTestExecutionCallback");
+        System.out.println("               ### AfterTestExecutionCallback");
     }
 
     @Override
     public void beforeTestExecution(ExtensionContext context) throws Exception {
-        System.out.println("               ### AfterTestExecutionCallback");
+        System.out.println("              ### BeforeTestExecutionCallback");
     }
 }
