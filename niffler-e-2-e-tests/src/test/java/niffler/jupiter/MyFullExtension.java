@@ -1,12 +1,6 @@
 package niffler.jupiter;
 
-import org.junit.jupiter.api.extension.AfterAllCallback;
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.*;
 
 public class MyFullExtension implements AfterAllCallback,
         AfterEachCallback,
@@ -37,11 +31,11 @@ public class MyFullExtension implements AfterAllCallback,
 
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception {
-        System.out.println("              ### BeforeTestExecutionCallback");
+        System.out.println("               ### AfterTestExecutionCallback");
     }
 
     @Override
     public void beforeTestExecution(ExtensionContext context) throws Exception {
-        System.out.println("               ### AfterTestExecutionCallback");
+        System.out.println("              ### BeforeTestExecutionCallback");
     }
 }

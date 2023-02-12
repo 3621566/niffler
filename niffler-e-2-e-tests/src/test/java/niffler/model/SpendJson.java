@@ -1,17 +1,27 @@
 package niffler.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
-public class SpendJson {
-    @JsonProperty("id")
-    private UUID id;
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Accessors(chain = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class SpendJson implements Serializable {
     @JsonProperty("spendDate")
     private Date spendDate;
     @JsonProperty("category")
-    private String category;
+    private Category category;
     @JsonProperty("currency")
     private CurrencyValues currency;
     @JsonProperty("amount")
@@ -20,63 +30,4 @@ public class SpendJson {
     private String description;
     @JsonProperty("username")
     private String username;
-
-    public SpendJson() {
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public Date getSpendDate() {
-        return spendDate;
-    }
-
-    public void setSpendDate(Date spendDate) {
-        this.spendDate = spendDate;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public CurrencyValues getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(CurrencyValues currency) {
-        this.currency = currency;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 }
