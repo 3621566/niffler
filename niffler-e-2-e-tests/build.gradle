@@ -31,7 +31,14 @@ dependencies {
             "com.github.javafaker:javafaker:1.0.2",
             "io.qameta.allure:allure-selenide:${allureVersion}",
             "io.qameta.allure:allure-rest-assured:${allureVersion}",
-            "org.aeonbits.owner:owner:1.0.12"
+            "org.aeonbits.owner:owner:1.0.12",
+            "com.squareup.retrofit2:retrofit:2.9.0",
+            "com.squareup.retrofit2:converter-jackson:2.9.0",
+            "com.squareup.okhttp:logging-interceptor:2.7.5"
+    implementation("io.qameta.allure:allure-junit5:2.20.1") {
+        exclude group: "org.junit.platform"
+        exclude group: "org.junit.jupiter"
+    }
 
 }
 
