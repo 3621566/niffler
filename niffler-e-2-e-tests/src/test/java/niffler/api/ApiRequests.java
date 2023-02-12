@@ -2,8 +2,8 @@ package niffler.api;
 
 import com.github.javafaker.Faker;
 import niffler.model.Category;
-import niffler.model.requests.CurrencyValues;
-import niffler.model.requests.SpendJson;
+import niffler.model.CurrencyValues;
+import niffler.model.SpendJson;
 
 import java.util.Date;
 
