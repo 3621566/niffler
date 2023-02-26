@@ -2,19 +2,22 @@ import {useContext, useState} from "react";
 import {postData} from "../../api/api";
 import {useLoadedData} from "../../api/hooks";
 import {UserContext} from "../../contexts/UserContext";
+import {showError, showSuccess} from "../../toaster/toaster";
 import {Button} from "../Button";
+import {Categories} from "../Categories";
 import {FormInput} from "../FormInput";
 import {FormSelect} from "../FormSelect";
 import {Header} from "../Header";
 import {ProfileAvatar} from "../ProfileAvatar";
 
-export const Profile = ({showSuccess, showError}) => {
+export const Profile = () => {
 
     const {user, setUser} = useContext(UserContext);
     const [userData, setUserData] = useState({
         firstname: user?.firstname ?? "",
         surname: user?.surname ?? "",
-        currency: {value: user.currency, label: user.currency}
+        currency: {value: user.currency, label: user.currency},
+        photo: user?.photo ?? null,
         });
     const [currencies, setCurrencies] = useState([]);
 
@@ -47,7 +50,15 @@ export const Profile = ({showSuccess, showError}) => {
         });
     };
 
-    const handleProfileAvatarChange = (e) => {
+    const handleProfileAvatarChange = (selectedFile) => {
+        if (selectedFile && selectedFile !== userData.photo) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                const result = reader.result;
+                setUserData({...userData, photo: result})
+            }
+            reader.readAsDataURL(selectedFile);
+        }
     }
 
 
@@ -60,7 +71,7 @@ export const Profile = ({showSuccess, showError}) => {
                     <div className="main-content__section-avatar">
                         <form onSubmit={handleChangeProfile}>
                         <ProfileAvatar username={user?.username}
-                                       value={userData?.photo}
+                                       value={user?.photo}
                                        handleChangeValue={handleProfileAvatarChange}/>
                             <div className="profile__info-container">
                                     <FormInput placeholder={"Set your name"}
@@ -75,25 +86,23 @@ export const Profile = ({showSuccess, showError}) => {
                                                value={userData.surname}
                                                placeholder={"Set your surname"}
                                                max={50}
-                                               handleChangeValue={(data) => {
-                                                   setUserData({...userData, surname: data.target.value})
-                                               }
-                                    }
+                                               handleChangeValue={(data) => setUserData({...userData, surname: data.target.value})}
                                     />
                                     <div style={{width: 350}}>
                                         <FormSelect options={currencies}
                                                     placeholder="Select currency"
                                                     value={userData?.currency}
-                                                    label="Currency"
+                                                    label="Currency:"
                                                     onChange={(currency) => {
                                                         setUserData({...userData, currency})}}
                                         />
                                     </div>
                             </div>
-                            <Button buttonText={"Submit"}/>
+                            <Button type="submit" buttonText={"Submit"}/>
                         </form>
                     </div>
                 </section>
+                <Categories />
             </div>
         </main>
         <footer className={"footer"}>

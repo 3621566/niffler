@@ -10,7 +10,7 @@ export const Header = () => {
 
     const handleLogout = () => {
         getData({
-            path:"http://127.0.0.1:9000/logout",
+            path: `${process.env.REACT_APP_AUTH_URL}/logout`,
             onSuccess: () => {
                 sessionStorage.clear();
                 setUser(null);
@@ -24,7 +24,7 @@ export const Header = () => {
     return (
         <header className="header">
             <div className="header__group">
-                <img className="header__logo" src="/images/niffler-logo.png" width={90} height={90}
+                <img className="header__logo" src="/images/niffler-logo.png" width={70} height={70}
                      alt="Logo Niffler"/>
                 <h1 className="header__title">Niffler. The coin keeper.</h1>
             </div>
@@ -37,8 +37,8 @@ export const Header = () => {
                             ) : (
                                 <Link className="header__link" to={"/profile"}>
                                     <img className="header__avatar"
-                                         src={user?.avatar ? URL.createObjectURL(user.avatar) : "/images/niffler_avatar.jpeg"} alt="Аватар профиля"
-                                         width={50} height={50}/>
+                                         src={user?.photo ?? "/images/niffler_avatar.jpeg"} alt="Аватар профиля"
+                                         width={60} height={60}/>
                                     <p className="header__username">{user?.username}</p>
                                 </Link>
                             )

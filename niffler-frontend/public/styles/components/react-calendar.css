@@ -5,10 +5,10 @@
 }
 
 .react-datepicker__input-container input {
-    font-family: "PTRootUIWeb";
+    font-family: "PTRootUIWeb", var(--font-fallback);;
     width: 100%;
     display: block;
-    margin-bottom: 20px;
+    margin: 5px 0;
 
     box-sizing: border-box;
     font-size: 14px;

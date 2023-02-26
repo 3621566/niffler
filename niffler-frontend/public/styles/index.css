@@ -7,6 +7,7 @@
 /*other components styles*/
 @import url("./components/avatar.css");
 @import url("./components/button.css");
+@import url("./components/categories.css");
 @import url("./components/editable-value.css");
 @import url("./components/form.css");
 @import url("./components/form-input.css");
@@ -14,6 +15,7 @@
 @import url("./components/profile.css");
 @import url("./components/react-calendar.css");
 @import url("./components/select.css");
+@import url("./components/spendings.css");
 @import url("./components/table.css");
 
 .main {
@@ -24,7 +26,8 @@
 }
 
 .main-content {
-    margin: 160px 20px 100px;
+    width: 100%;
+    margin: 160px 40px 100px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-gap: 35px;
@@ -33,23 +36,10 @@
     "history history history";
 }
 
-.profile-content {
-    margin: 160px 20px 100px;
-    display: grid;
-    grid-template-columns: 1fr;
-
-}
-
-
-.value-form {
-    display: flex;
-    align-items: flex-end;
-}
 
 .value-container {
+    margin: 0 auto;
     width: 100%;
-    display: flex;
-    justify-content: space-between;
 }
 
 
@@ -69,12 +59,14 @@
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    padding: 20px;
+    padding: 50px;
     width: 100%;
     box-sizing: border-box;
 }
 
 .main-content__section-add-spending {
+    max-height: 480px;
+    width: 450px;
     grid-area: add;
     display: flex;
     flex-direction: column;
@@ -82,6 +74,7 @@
 }
 
 .main-content__section-stats {
+    max-height: 480px;
     grid-area: stats;
 }
 
@@ -90,14 +83,14 @@
 }
 
 .spendings__content {
-    margin: 10px;
+    margin: 20px;
 }
 
 .spendings__controls {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 20px;
+    margin: 20px 20px 20px 0;
 }
 
 .spendings__filters {
@@ -116,8 +109,13 @@
     margin-right: 20px;
 }
 
+.add-spending__form {
+    width: 350px;
+}
+
 .spendings__img {
-    box-shadow: 0 0 10px 10px black;
+    box-shadow: 0 0 5px 5px black;
+    margin: 2px 0 20px 20px;
 }
 
 .cite {

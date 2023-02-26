@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,21 +43,48 @@ public class SpendService {
 
     public @Nonnull
     SpendJson saveSpendForUser(@Nonnull SpendJson spend) {
+        final String username = spend.getUsername();
+        final String category = spend.getCategory();
+
         SpendEntity spendEntity = new SpendEntity();
-        spendEntity.setUsername(spend.getUsername());
+        spendEntity.setUsername(username);
         spendEntity.setSpendDate(spend.getSpendDate());
         spendEntity.setCurrency(spend.getCurrency());
         spendEntity.setDescription(spend.getDescription());
         spendEntity.setAmount(spend.getAmount());
 
-        CategoryEntity categoryEntity = categoryRepository.findByDescription(spend.getCategory());
-        if (categoryEntity == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Can`t find category by given name: " + spend.getCategory());
-        }
-        spendEntity.setCategory(categoryEntity);
+        CategoryEntity categoryEntity = categoryRepository.findAllByUsername(username)
+                .stream()
+                .filter(c -> c.getCategory().equals(category))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Can`t find category by given name: " + category));
 
+        spendEntity.setCategory(categoryEntity);
         return SpendJson.fromEntity(spendRepository.save(spendEntity));
+    }
+
+    public @Nonnull
+    SpendJson editSpendForUser(@Nonnull SpendJson spend) {
+        Optional<SpendEntity> spendById = spendRepository.findById(spend.getId());
+        if (spendById.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can`t find spend by given id: " + spend.getId());
+        } else {
+            final String category = spend.getCategory();
+            CategoryEntity categoryEntity = categoryRepository.findAllByUsername(spend.getUsername())
+                    .stream()
+                    .filter(c -> c.getCategory().equals(category))
+                    .findFirst()
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, "Can`t find category by given name: " + category));
+
+            SpendEntity spendEntity = spendById.get();
+            spendEntity.setSpendDate(spend.getSpendDate());
+            spendEntity.setCategory(categoryEntity);
+            spendEntity.setAmount(spend.getAmount());
+            spendEntity.setDescription(spend.getDescription());
+            return SpendJson.fromEntity(spendRepository.save(spendEntity));
+        }
     }
 
     public @Nonnull
@@ -67,6 +95,15 @@ public class SpendService {
         return getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo)
                 .map(SpendJson::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    public void deleteSpends(@Nonnull String username, @Nonnull List<String> ids) {
+        for (String id : ids) {
+            spendRepository.delete(getSpendsEntityForUser(username, null, null, null)
+                    .filter(se -> se.getId().toString().equals(id))
+                    .findFirst()
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Spend not found by given id: " + id)));
+        }
     }
 
     public @Nonnull
@@ -142,11 +179,11 @@ public class SpendService {
                 sbcjResult.add(sbcj);
             }
 
-            categoryRepository.findAll().stream()
-                    .filter(c -> !spendsByCategory.containsKey(c.getDescription()))
+            categoryRepository.findAllByUsername(username).stream()
+                    .filter(c -> !spendsByCategory.containsKey(c.getCategory()))
                     .map(c -> {
                         StatisticByCategoryJson sbcj = new StatisticByCategoryJson();
-                        sbcj.setCategory(c.getDescription());
+                        sbcj.setCategory(c.getCategory());
                         sbcj.setSpends(Collections.emptyList());
                         sbcj.setTotal(0.0);
                         sbcj.setTotalInUserDefaultCurrency(0.0);
@@ -161,12 +198,14 @@ public class SpendService {
         return result;
     }
 
-    public @Nonnull
+    private @Nonnull
     Stream<SpendEntity> getSpendsEntityForUser(@Nonnull String username,
                                                @Nullable CurrencyValues filterCurrency,
                                                @Nullable Date dateFrom,
                                                @Nullable Date dateTo) {
-        dateTo = dateTo == null ? new Date() : dateTo;
+        dateTo = dateTo == null
+                ? new Date()
+                : dateTo;
 
         List<SpendEntity> spends = dateFrom == null
                 ? spendRepository.findAllByUsernameAndSpendDateLessThanEqual(username, dateTo)

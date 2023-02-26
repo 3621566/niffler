@@ -1,29 +1,47 @@
-import dayjs from "dayjs";
+import {useContext} from "react";
+import {TableSelectionContext} from "../../contexts/TableSelectionContext";
+import {BatchCheckbox} from "../Checkbox/BatchCheckbox";
+import {SpendingRow} from "../SpendingRow";
 
-export const SpendingTable = ({spendings}) => {
+export const SpendingTable = ({spendings, isGraphOutdated, setIsGraphOutdated, categories}) => {
+
+    const {selectedIds, setSelectedIds, allIds} = useContext(TableSelectionContext);
+
+    const handleSingleClick = (id) => {
+        selectedIds?.includes(id)
+            ? setSelectedIds(selectedIds.filter(v => v!== id))
+            : setSelectedIds([...selectedIds, id]);
+    }
+
+    const handleBulkClick = () => {
+        selectedIds?.length === allIds?.length ? setSelectedIds([]) : setSelectedIds(allIds);
+    }
 
     return (
         <>
             <table className="table spendings-table">
                 <thead>
                 <tr>
+                    <th><BatchCheckbox handleBulkClick={handleBulkClick} selected={selectedIds?.length === allIds?.length}/></th>
                     <th>Date</th>
                     <th>Amount</th>
                     <th>Currency</th>
                     <th>Category</th>
                     <th>Description</th>
+                    <th></th>
                 </tr>
                 </thead>
 
                 <tbody>
-                {spendings?.map((spending, index) => (
-                    <tr key={`spending-${index}`}>
-                        <td>{dayjs(spending?.spendDate).format('DD MMM YY')}</td>
-                        <td>{spending?.amount}</td>
-                        <td>{spending?.currency}</td>
-                        <td>{spending?.category}</td>
-                        <td>{spending?.description}</td>
-                    </tr>
+                {spendings?.map((spending) => (
+                    <SpendingRow key={spending.id}
+                                 spending={spending}
+                                 handleCheckboxClick={handleSingleClick}
+                                 isSelected={selectedIds.includes(spending?.id)}
+                                 isGraphOutdated={isGraphOutdated}
+                                 setIsGraphOutdated={setIsGraphOutdated}
+                                 categories={categories}
+                    />
                 ))}
                 </tbody>
             </table>
