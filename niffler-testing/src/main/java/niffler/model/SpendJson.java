@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -17,10 +19,13 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SpendJson implements Serializable {
+
+    @JsonProperty("id")
+    private UUID id;
     @JsonProperty("spendDate")
-    private String spendDate;
+    private Date spendDate;
     @JsonProperty("category")
-    private CategoryValues category;
+    private String category;
     @JsonProperty("currency")
     private CurrencyValues currency;
     @JsonProperty("amount")
@@ -29,4 +34,9 @@ public class SpendJson implements Serializable {
     private String description;
     @JsonProperty("username")
     private String username;
+
+//    public SpendJson setSpendDate(String spendDate) {
+//        this.spendDate = DateUtils.reFormatDate(spendDate);
+//        return this;
+//    }
 }

@@ -54,10 +54,10 @@ dependencies {
     }
 }
 
+
 test {
-    useJUnitPlatform()
-    options {
-        systemProperties(System.getProperties())
+    useJUnitPlatform {
+        includeTags(System.getProperty('tag', 'NONE'))
     }
 }
 

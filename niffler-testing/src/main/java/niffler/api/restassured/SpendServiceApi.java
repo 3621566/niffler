@@ -9,12 +9,14 @@ import niffler.model.CurrencyValues;
 import niffler.model.SpendJson;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static niffler.api.restassured.Spec.request;
 import static niffler.config.NifflerConfigImpl.getUsername;
-import static niffler.utilities.Utilities.*;
+import static niffler.utilities.Utilities.randomDoubleFrom;
+import static niffler.utilities.Utilities.randomEnum;
 
 public class SpendServiceApi {
 
@@ -32,13 +34,13 @@ public class SpendServiceApi {
     }
 
     public static SpendJson postRandomSpend() {
-        SpendJson spendJson = new SpendJson(
-                getFormattedDate(),
-                randomEnum(CategoryValues.class),
-                randomEnum(CurrencyValues.class),
-                randomDoubleFrom(1.0, 50.0),
-                new Faker().beer().name(),
-                getUsername());
+        SpendJson spendJson = new SpendJson()
+                .setUsername(getUsername())
+                .setSpendDate(new Date())
+                .setCurrency(randomEnum(CurrencyValues.class))
+                .setAmount(randomDoubleFrom(1.0, 50.0))
+                .setDescription(new Faker().beer().name())
+                .setCategory(randomEnum(CategoryValues.class).name());
         return postSpends(spendJson);
     }
 
@@ -52,10 +54,8 @@ public class SpendServiceApi {
     public static SpendJson postSpends(SpendJson spendJson) {
         return request()
                 .body(spendJson)
-                .log().body()
                 .post("/addSpend")
                 .then()
-                .log().body()
                 .statusCode(201)
                 .extract().as(SpendJson.class);
     }
@@ -66,20 +66,17 @@ public class SpendServiceApi {
                 .param("username", getUsername())
                 .get("/categories")
                 .then()
-//                .log().body()
                 .statusCode(200)
                 .extract().as(new TypeRef<List<CategoryJson>>() {
                 });
     }
 
-    @Step("POST: Category: {name} for User: {username}")
+    @Step("POST: Category Id: {id} for User: {username}")
     public static CategoryJson postCategory(CategoryValues name, String username) {
         return request()
                 .body(new CategoryJson().setCategory(name).setUsername(username))
-//                .log().body()
                 .post("/category")
                 .then()
-//                .log().body()
                 .statusCode(200)
                 .extract().as(CategoryJson.class);
     }
@@ -91,8 +88,7 @@ public class SpendServiceApi {
     public static void createCategoriesApi() {
         List<CategoryValues> existingCategoriesInDbByUser = getAllCategories().stream().map(CategoryJson::getCategory).toList();
         List<CategoryValues> requiredCategories = Arrays.asList(CategoryValues.values());
-        List<CategoryValues> categoriesShouldBeCreated = existingCategoriesInDbByUser.stream().filter(category -> !requiredCategories.contains(category))
-                .toList();
+        List<CategoryValues> categoriesShouldBeCreated = requiredCategories.stream().filter(category -> !existingCategoriesInDbByUser.contains(category)).toList();
         categoriesShouldBeCreated.forEach(SpendServiceApi::postCategory);
     }
 }
