@@ -11,3 +11,11 @@ password: 12345
 
     Category: list of category: niffler-testing/src/main/java/niffler/model/CategoryValues.class
     Spends:  three random spends will be created.
+
+#### For Execute in IntelliJ IDEA select run configuration :
+
+    'spend test with AllureServe'
+
+#### For Execute in IntelliJ IDEA select run configuration :
+
+    'spend test with AllureServe'
