@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static niffler.api.restassured.Spec.request;
+import static niffler.api.restassured.Spec.spendRequest;
 import static niffler.config.NifflerConfigImpl.getUsername;
 import static niffler.utilities.Utilities.randomDoubleFrom;
 import static niffler.utilities.Utilities.randomEnum;
@@ -23,7 +23,7 @@ public class SpendServiceApi {
     @Step("GET: Spend List")
     public static List<SpendJson> getSpends() {
 
-        return request()
+        return spendRequest()
                 .param("username", getUsername())
                 .get("/spends")
                 .then()
@@ -52,7 +52,7 @@ public class SpendServiceApi {
 
     @Step("POST: Spend")
     public static SpendJson postSpends(SpendJson spendJson) {
-        return request()
+        return spendRequest()
                 .body(spendJson)
                 .post("/addSpend")
                 .then()
@@ -62,7 +62,7 @@ public class SpendServiceApi {
 
     @Step("GET: All Categories")
     public static List<CategoryJson> getAllCategories() {
-        return request()
+        return spendRequest()
                 .param("username", getUsername())
                 .get("/categories")
                 .then()
@@ -73,7 +73,7 @@ public class SpendServiceApi {
 
     @Step("POST: Category Id: {id} for User: {username}")
     public static CategoryJson postCategory(CategoryValues name, String username) {
-        return request()
+        return spendRequest()
                 .body(new CategoryJson().setCategory(name).setUsername(username))
                 .post("/category")
                 .then()

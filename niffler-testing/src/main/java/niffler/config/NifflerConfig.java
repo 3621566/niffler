@@ -18,6 +18,6 @@ public interface NifflerConfig extends Config {
     @Key("web.url")
     String webUrl();
 
-    @Key("api.url")
-    String apiUrl();
+    @Key("api.%s.url")
+    String apiUrl(String serviceName);
 }

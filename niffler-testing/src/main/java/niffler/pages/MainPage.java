@@ -2,18 +2,24 @@ package niffler.pages;
 
 import com.codeborne.selenide.ElementsCollection;
 import io.qameta.allure.Step;
+import niffler.AppManager;
 import niffler.model.SpendJson;
 
 import java.util.List;
 
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThanOrEqual;
 import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Selenide.open;
 import static niffler.api.restassured.SpendServiceApi.getSpends;
 import static niffler.condition.SpendCondition.spends;
 import static niffler.utilities.NamedBy.*;
 
 public class MainPage extends BasePage<MainPage> {
+    AppManager app;
 
+    public MainPage(AppManager app) {
+        this.app = app;
+    }
 
     private final ElementsCollection tableSpend = $$(named(xpath("//tbody//tr")).as("table spend")),
             spendingButtons = $$(named(cssSelector(".spendings__buttons button")).as("Spending Buttons")),
@@ -32,5 +38,10 @@ public class MainPage extends BasePage<MainPage> {
         tableSpend.shouldHave(sizeGreaterThanOrEqual(quantityOfSpends));
         spendsTableBody.shouldHave(spends(spendsInDb));
         return this;
+    }
+
+    public ProfilePage openProfile() {
+        open("/profile");
+        return app.profilePage();
     }
 }

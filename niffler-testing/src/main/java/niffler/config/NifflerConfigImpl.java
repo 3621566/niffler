@@ -20,7 +20,11 @@ public class NifflerConfigImpl {
         return getNifflerConfig().webUrl();
     }
 
-    public static String getApiUrl() {
-        return getNifflerConfig().apiUrl();
+    public static String getApiSpendUrl() {
+        return getNifflerConfig().apiUrl("spend");
+    }
+
+    public static String getApiUserDataUrl() {
+        return getNifflerConfig().apiUrl("user");
     }
 }

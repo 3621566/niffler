@@ -2,6 +2,7 @@ package niffler.pages;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
+import niffler.AppManager;
 import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Condition.text;
@@ -12,8 +13,14 @@ import static niffler.config.NifflerConfigImpl.getUsername;
 import static niffler.utilities.NamedBy.named;
 
 public class LoginPage extends BasePage<LoginPage> {
+    AppManager app;
 
-    private SelenideElement loginButtonOnWelcomePage = $(named(By.cssSelector("a[href*='redirect']")).as("Login Button")),
+    public LoginPage(AppManager app) {
+        this.app = app;
+    }
+
+    private final SelenideElement
+            loginButtonOnWelcomePage = $(named(By.cssSelector("a[href*='redirect']")).as("Login Button")),
             usernameField = $(named(By.cssSelector("input[name='username']")).as("Username Field")),
             passwordField = $(named(By.cssSelector("input[name='password']")).as("Password Field")),
             submitButton = $(named(By.cssSelector("button[type='submit']")).as("Submit Button")),
@@ -32,6 +39,6 @@ public class LoginPage extends BasePage<LoginPage> {
         headerTitle
                 .shouldBe(visible)
                 .shouldHave(text("Niffler. The coin keeper."));
-        return mainPage();
+        return app.mainPage();
     }
 }

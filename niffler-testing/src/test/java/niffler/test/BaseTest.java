@@ -1,8 +1,9 @@
 package niffler.test;
 
 import io.qameta.allure.junit5.AllureJunit5;
+import niffler.AppManager;
 import niffler.jupiter.SuiteExtension;
-import niffler.pages.BasePage;
+import niffler.model.TestData;
 import niffler.pages.StartPage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +14,7 @@ import static niffler.utilities.DriverUtils.configureDriver;
 @ExtendWith({SuiteExtension.class, AllureJunit5.class})
 public abstract class BaseTest {
 
-    BasePage niffler;
+    AppManager niffler = new AppManager(new TestData());
 
     @BeforeAll
     static void beforeAll() {
@@ -22,11 +23,14 @@ public abstract class BaseTest {
 
     @BeforeEach
     void setUp() {
-        niffler = new BasePage();
     }
 
     protected StartPage niffler() {
-        BasePage basePage = niffler == null ? new BasePage() : niffler;
-        return basePage.openApplication();
+        return niffler.openApplication();
+    }
+
+    protected StartPage niffler(TestData testData) {
+        niffler.setTestData(testData);
+        return niffler();
     }
 }
