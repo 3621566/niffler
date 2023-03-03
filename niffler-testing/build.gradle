@@ -57,6 +57,12 @@ dependencies {
 
 test {
     useJUnitPlatform {
+    }
+}
+
+task testByTag(type: Test) {
+    systemProperties(System.getProperties())
+    useJUnitPlatform {
         includeTags(System.getProperty('tag', 'NONE'))
     }
 }
