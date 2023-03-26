@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'guru.qa'
-version '0.0.1-SNAPSHOT'
+version '0.0.2-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -23,6 +23,8 @@ dependencies {
     implementation 'net.devh:grpc-client-spring-boot-starter:2.14.0.RELEASE'
     implementation "org.springframework:spring-webflux"
     implementation "io.projectreactor.netty:reactor-netty"
+    implementation "org.springframework.boot:spring-boot-starter-graphql"
+    implementation 'com.tailrocks.graphql:graphql-datetime-spring-boot-starter:6.0.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
@@ -31,9 +33,7 @@ docker {
     name "dtuchs/niffler-gateway:${project.version}"
     tag 'latest', 'dtuchs/niffler-gateway:latest'
     files bootJar.archiveFile
-    buildArgs([
-            APP_VER: project.version
-    ])
+    buildArgs([APP_VER: project.version, DOCKER: project.ext.dockerImage])
     noCache true
 }
 

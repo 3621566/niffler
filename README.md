@@ -84,25 +84,33 @@ OpenJDK Runtime Environment Homebrew (build 19.0.1)
 
 # Запуск Niffler локальное в IDE:
 
-#### 1. Запустить фронтенд (сначала обновить зависимости)
+#### 1. Выбрать какой фронтенд предполагается запускать - REST или GraphQL, и перейти в соответсвующий каталог
 ```posh
 Dmitriis-MacBook-Pro niffler % cd niffler-frontend
+```
+или для GraphQL:
+```posh
+Dmitriis-MacBook-Pro niffler % cd niffler-frontend-gql
+```
+
+#### 2. Запустить фронтенд (сначала обновить зависимости)
+```posh
 Dmitriis-MacBook-Pro niffler-frontend % npm i
 Dmitriis-MacBook-Pro niffler-frontend % npm run build:dev
 ```
 
-#### 2. Прописать run конфигурацию для всех сервисов niffler-* - Active profiles local
+#### 3. Прописать run конфигурацию для всех сервисов niffler-* - Active profiles local
 Для этого зайти в меню Run -> Edit Configurations -> выбрать main класс -> указать Active profiles: local
 [Инструкция](https://stackoverflow.com/questions/39738901/how-do-i-activate-a-spring-boot-profile-when-running-from-intellij).
 
-#### 3 Запустить сервис Niffler-auth c помощью gradle или командой Run в IDE:
+#### 4 Запустить сервис Niffler-auth c помощью gradle или командой Run в IDE:
 - Запустить сервис auth
 ```posh
 Dmitriis-MacBook-Pro niffler % cd niffler-auth
 Dmitriis-MacBook-Pro niffler-auth % gradle bootRun --args='--spring.profiles.active=local'
 ```
 Или просто перейдя к main-классу приложения NifflerAuthApplication выбрать run в IDEA (предварительно удостовериться что выполнен предыдущий пункт)
-#### 4  Запустить в любой последовательности другие сервисы: niffler-currency, niffler-spend, niffler-gateway, niffler-userdata
+#### 5  Запустить в любой последовательности другие сервисы: niffler-currency, niffler-spend, niffler-gateway, niffler-userdata
 
 
 # Запуск Niffler в докере:
@@ -113,20 +121,37 @@ Dmitriis-MacBook-Pro niffler-auth % gradle bootRun --args='--spring.profiles.act
 
 #### 3. Выполнить docker login с созданным access_token (в инструкции это описано)
 
-#### 4. Перейти в корневой каталог проекта
+#### 4. Прописать в etc/hosts элиас для Docker-имени фронтенда:  127.0.0.1 niffler-frontend
+```posh
+Dmitriis-MacBook-Pro niffler % vi /etc/hosts
+```
+```posh
+##
+# Host Database
+#
+# localhost is used to configure the loopback interface
+# when the system is booting.  Do not change this entry.
+##
+127.0.0.1       localhost
+127.0.0.1       niffler-frontend
+```
+
+#### 5. Перейти в корневой каталог проекта
 ```posh
 Dmitriis-MacBook-Pro niffler % cd niffler
 ```
-#### 5.  Спуллить все контейнеры актуальных версий
+#### 6.  Запустить все сервисы, если необходим фронтенд GraphQL, то это указывается аргументом к скрипту:
+для REST:
 ```posh
-Dmitriis-MacBook-Pro  niffler % docker-compose pull
+Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh
 ```
-#### 6.  Запустить все сервисы 
+для GraphQL:
 ```posh
-Dmitriis-MacBook-Pro  niffler % docker-compose up -d
+Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh gql
 ```
 
-Niffler при запуске в докере будет работать для вас на порту 80, этот порт можно не указывать в браузере, таким образом переходить напрямую по ссылке http://127.0.0.1/
+
+Niffler при запуске в докере будет работать для вас по адресу http://niffler-frontend:80/, этот порт НЕ НУЖНО указывать в браузере, таким образом переходить напрямую по ссылке http://niffler-frontend/
 *ВАЖНО!* из docker-network Вам будут доступны только следующие порты:
 - порт 80 (все запросы с него перенаправляются nginx-ом на frontend)
 - порт 9000 (сервис niffler-auth)
@@ -135,6 +160,7 @@ Niffler при запуске в докере будет работать для
 # Создание своего docker repository для форка Niffler и сборка своих докер контейнеров
 #### 1. Войти в свою УЗ на https://hub.docker.com/ и последовательно создать публичные репозитории
 - niffler-frontend
+- niffler-frontend-gql
 - niffler-userdata
 - niffler-spend
 - niffler-gateway
@@ -149,37 +175,45 @@ Niffler при запуске в докере будет работать для
 !К замене надо отнестись внимательно, вот список мест на текущий момент:!
 - build.gradle всех сервисов Spring
 - docker-compose.yaml в корне проекта
+- docker-compose.test.yaml в корне проекта
 - docker.properties в модуле niffler-frontend
+- docker.properties в модуле niffler-frontend-gql
 
 #### 3. Перейти в корневой каталог проекта
 ```posh
 Dmitriis-MacBook-Pro niffler % cd niffler
 ```
 
-#### 3. Собрать весь java проект (можно скипнуть тесты, т.к. наши e-2-e все равно не запустятся без полностью развернутого Niffler)
+#### 4.  Собрать все имеджи, запушить и запустить niffler одной командой, если необходим фронтенд GraphQL, то это указывается аргументом к скрипту:
+для REST:
 ```posh
-Dmitriis-MacBook-Pro niffler % gradle clean build -x test
+Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh push
+```
+для GraphQL:
+```posh
+Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh gql push
 ```
 
-#### 4. Собрать докер images back-end
+# Запуск e-2-e тестов в Docker network изолированно Niffler в докере:
+#### 1. Перейти в корневой каталог проекта
 ```posh
-Dmitriis-MacBook-Pro niffler % gradle dockerTag
+Dmitriis-MacBook-Pro niffler % cd niffler
+```
+#### 2.  Запустить все сервисы и тесты, если необходим фронтенд GraphQL, то это указывается аргументом к скрипту:
+для REST:
+```posh
+Dmitriis-MacBook-Pro  niffler % bash docker-compose-e2e.sh
+```
+для GraphQL:
+```posh
+Dmitriis-MacBook-Pro  niffler % bash docker-compose-e2e.sh gql
 ```
 
-#### 5. Запушить докер images back-end (у вас должен быть выполнен предварительно docker login)
-```posh
-Dmitriis-MacBook-Pro niffler % gradle dockerPush
-```
+#### 3.  Selenoid UI доступен по адресу: http://localhost:9090/
 
-#### 6. Собрать и запушить front-end (выполняется одним действием)
-```posh
-Dmitriis-MacBook-Pro niffler % cd niffler-frontend
-Dmitriis-MacBook-Pro niffler-frontend % bash build-docker.sh
-```
+#### 4.  Allure доступен по адресу: http://localhost:5050/allure-docker-service/projects/niffler-e-2-e-tests/reports/latest/index.html
 
-#### 7.  Запустить все сервисы
-```posh
-Dmitriis-MacBook-Pro  niffler % docker-compose up -d
-```
 
-![Enjoy the Niffler](/niffler-frontend/public/images/niffler-logo.png)
+
+
+![Enjoy the Niffler](/niffler-frontend-gql/public/images/niffler-logo.png)
