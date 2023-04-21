@@ -2,14 +2,14 @@ package niffler.test;
 
 
 import io.qameta.allure.AllureId;
-import niffler.jupiter.SuiteExtension;
+import niffler.jupiter.extension.SpendExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @DisplayName("SPEND TESTS")
-@ExtendWith({SuiteExtension.class})
+@ExtendWith({SpendExtension.class})
 public class SpendTableTests extends BaseTest {
 
     @AllureId("2")

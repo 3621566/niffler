@@ -7,6 +7,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static com.codeborne.selenide.AssertionMode.STRICT;
+import static niffler.config.NifflerConfigImpl.getAppUrl;
 
 public class DriverUtils {
 
@@ -23,6 +24,7 @@ public class DriverUtils {
         Configuration.timeout = 2000;
         capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
         Configuration.browserCapabilities = capabilities;
+        Configuration.baseUrl = getAppUrl();
 //        Configuration.browserSize = "1920x1080";
         Configuration.browserSize = "3840x2160";
 //        Configuration.assertionMode = SOFT;

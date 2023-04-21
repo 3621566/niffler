@@ -1,11 +1,11 @@
-package niffler.jupiter;
+package niffler.jupiter.extension;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import static niffler.api.restassured.SpendServiceApi.createCategoriesApi;
 import static niffler.api.restassured.SpendServiceApi.postRandomSpends;
 
-public class SuiteExtension implements AroundAllTestsExtension {
+public class SpendExtension implements AroundAllTestsExtension {
     @Override
     public void beforeAllTests(ExtensionContext context) {
         createCategoriesApi();

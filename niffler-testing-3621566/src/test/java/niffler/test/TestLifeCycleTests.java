@@ -1,6 +1,6 @@
 package niffler.test;
 
-import niffler.jupiter.MyAllCallBackExtension;
+import niffler.jupiter.extension.MyAllCallBackExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 

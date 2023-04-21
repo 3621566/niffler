@@ -51,6 +51,8 @@ public class ProfilePage extends BasePage<ProfilePage> {
         if (currentUserInfoUi.equals(updatedUserInfo)) {
             allureLog("user info  should not matched");
         } else {
+            allureLog(currentUserInfoUi.toString());
+            allureLog(updatedUserInfo.toString());
             Assertions.fail("user info not matched");
         }
         return this;

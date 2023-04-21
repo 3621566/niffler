@@ -2,7 +2,7 @@
     <configuration default="false" name="run test with report" type="GradleRunConfiguration" factoryName="Gradle">
         <ExternalSystemSettings>
             <option name="executionName"/>
-            <option name="externalProjectPath" value="$PROJECT_DIR$/niffler-testing"/>
+            <option name="externalProjectPath" value="$PROJECT_DIR$/niffler-testing-3621566"/>
             <option name="externalSystemIdString" value="GRADLE"/>
             <option name="scriptParameters" value="-Dtag=spend --continue"/>
             <option name="taskDescriptions">
